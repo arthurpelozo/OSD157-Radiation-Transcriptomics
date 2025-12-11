@@ -1,6 +1,6 @@
 OSD-157 Analysis Report
 ================
-Seu Nome
+Arthur Pelozo
 December 2025
 
 ``` r
@@ -1126,3 +1126,4 @@ gsea_kegg[gsea_kegg$pathway == "KEGG_PARKINSONS_DISEASE"]
     ##                    pathway      pval      padj    log2err       ES       NES  size  leadingEdge
     ##                     <char>     <num>     <num>      <num>    <num>     <num> <int>       <list>
     ## 1: KEGG_PARKINSONS_DISEASE 0.9210526 0.9609004 0.07325587 0.173958 0.7892453    91 SNCA, CY....
+
