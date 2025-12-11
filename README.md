@@ -1,4 +1,30 @@
-Transcriptomic Analysis of Dose-Dependent Response to Ionizing Radiation in Human Peripheral Blood and Evaluation of the Parkinson's Disease Pathway (OSD-157 Dataset)
+# OSD-157: Transcriptomic Analysis of Ionizing Radiation Response
+
+## Project Overview
+This repository contains the bioinformatics analysis pipeline and results for the NASA GeneLab dataset **OSD-157**. The study evaluates the transcriptomic response of human peripheral blood mononuclear cells exposed *ex vivo* to varying doses of Gamma radiation (0 to 8 Gy) after 48 hours.
+
+**Primary Goal:** To validate the radiation dose-response using canonical pathways (p53, Inflammation).
+**Secondary Goal:** To test the hypothesis that acute radiation induces a molecular signature similar to **Parkinson's Disease (PD)** in leukocytes.
+
+## Key Findings
+1. **Validation:** Strong activation of DNA damage response (p53) and cell cycle arrest (G2/M) pathways, confirming the biological efficacy of the radiation.
+2. **Hypothesis Test:** No statistically significant enrichment was found for the KEGG Parkinson's Disease pathway (NES = 0.79, FDR = 0.95), suggesting no direct molecular link in this tissue context.
+
+## Dataset Structure
+* **Platform:** Agilent Whole Human Genome Microarray 4x44K
+* **Design:** 5 Donors (Biological Replicates) x 5 Doses (0, 0.5, 2, 5, 8 Gy).
+* **Sample Count:** 25 samples.
+
+## Analysis Pipeline
+The analysis was performed in R using `limma` for linear modeling and `fgsea` for functional enrichment.
+1. **Normalization:** Background correction (`normexp`) + Quantile Normalization.
+2. **Modeling:** Paired design (`~ Dose + Donor`) to account for high inter-individual variability.
+3. **GSEA:** Multilevel enrichment analysis using Hallmark and KEGG collections.
+
+## Repository Contents
+* `scripts/`: R source code for the analysis pipeline.
+* `results/`: Processed tables of Differentially Expressed Genes (DEGs) and GSEA results.
+* `docs/`: Full scientific report.
 
 Author: Arthur Pelozo
 Date: December 2025 
