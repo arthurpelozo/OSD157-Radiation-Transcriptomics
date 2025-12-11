@@ -150,7 +150,3 @@ dir.create("results", showWarnings = FALSE)
 fwrite(gsea_hallmark, "results/GSEA_Hallmark.tsv", sep = "\t")
 fwrite(gsea_kegg,     "results/GSEA_KEGG.tsv", sep = "\t")
 fwrite(gsea_pd,       "results/GSEA_KEGG_PD.tsv", sep = "\t")
-
-###########################################
-# End of reproducible pipeline
-###########################################
