@@ -1,4 +1,7 @@
 # OSD-157: Transcriptomic Analysis of Ionizing Radiation Response
+**Author:** Arthur Pelozo
+**Date:** December 2025 
+**Platform:** Agilent Whole Human Genome Microarray (Single-Channel)
 
 ## Project Overview
 This repository contains the bioinformatics analysis pipeline and results for the NASA GeneLab dataset **OSD-157**. The study evaluates the transcriptomic response of human peripheral blood mononuclear cells exposed *ex vivo* to varying doses of Gamma radiation (0 to 8 Gy) after 48 hours.
@@ -26,11 +29,19 @@ The analysis was performed in R using `limma` for linear modeling and `fgsea` fo
 * `results/`: Processed tables of Differentially Expressed Genes (DEGs) and GSEA results.
 * `docs/`: Full scientific report.
 
-Author: Arthur Pelozo
-Date: December 2025 
-Platform: Agilent Whole Human Genome Microarray (Single-Channel)
 Data set: https://osdr.nasa.gov/bio/repo/data/studies/OSD-157
 
+GLDS-157_micoarray_E-GEOD-44201.raw.3.zip
+92.22 MB
+Tue Dec 05 2017
+
+GLDS-157_micoarray_E-GEOD-44201.raw.1.zip
+178.25 MB
+Tue Dec 05 2017
+
+GLDS-157_micoarray_E-GEOD-44201.raw.2.zip
+180.83 MB
+Tue Dec 05 2017
 
 
 Abstract
