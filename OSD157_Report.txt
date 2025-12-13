@@ -123,7 +123,7 @@ To confirm systemic relevance, the "Clean PD Risk Score" was modeled:
    (p = 0.06), proving that mitophagy is the statistical mediator of this risk.
 
 
-4. RISK ASSESSMENT: LATENT VULNERABILITY vs. ACTIVE DISEASE
+4. RISK ASSESSMENT
 --------------------------------------------------------------------------------
 Based on the quantitative mediation models, the level of risk identified in this 
 study can be classified as "Latent Transcriptomic Vulnerability."
@@ -172,4 +172,5 @@ VDACs).
 3. Systemic Risk: This mitophagy activation acts as a primary mediator, driving 
    a broader transcriptional state that resembles the molecular vulnerability 
    features of Parkinson's Disease.
+
 
