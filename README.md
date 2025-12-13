@@ -1,33 +1,68 @@
 # OSD-157: Transcriptomic Analysis of Ionizing Radiation Response
-**Author:** Arthur Pelozo   
-**Date:** December 2025   
+
+**Author:** Arthur Pelozo
+**Date:** December 2025
 **Platform:** Agilent Whole Human Genome Microarray (Single-Channel)
 
 ## Project Overview
+
 This repository contains the bioinformatics analysis pipeline and results for the NASA GeneLab dataset **OSD-157**. The study evaluates the transcriptomic response of human peripheral blood mononuclear cells exposed *ex vivo* to varying doses of Gamma radiation (0 to 8 Gy) after 48 hours.
 
-**Primary Goal:** To validate the radiation dose-response using canonical pathways (p53, Inflammation).
-**Secondary Goal:** To test the hypothesis that acute radiation induces a molecular signature similar to **Parkinson's Disease (PD)** in leukocytes.
+* **Primary Goal:** To validate the radiation dose-response using canonical pathways (p53, Inflammation).
+* **Secondary Goal:** To investigate potential overlaps between acute radiation response and **Parkinson's Disease (PD)** mechanisms, specifically focusing on **Mitochondrial Quality Control**.
 
 ## Key Findings
-1. **Validation:** Strong activation of DNA damage response (p53) and cell cycle arrest (G2/M) pathways, confirming the biological efficacy of the radiation.
-2. **Hypothesis Test:** No statistically significant enrichment was found for the KEGG Parkinson's Disease pathway (NES = 0.79, FDR = 0.95), suggesting no direct molecular link in this tissue context.
+
+### 1. Validation (Positive Control)
+* Strong activation of DNA damage response (p53) and cell cycle arrest (G2/M) pathways, confirming the biological efficacy of the radiation.
+
+### 2. Broad PD Hypothesis (Negative Result)
+* No statistically significant enrichment was found for the generic *KEGG Parkinson's Disease* pathway (NES = 0.79, FDR = 0.95), suggesting no broad molecular link to the disease signature in blood.
+
+### 3. Targeted Mitophagy Discovery (Novel Insight)
+Upon decomposing the pathway into custom functional modules, a specific, dose-dependent **"Push-Pull" Mitophagy Mechanism** was identified:
+* **Activation (+):** Upregulation of autophagic execution markers (*SQSTM1*, *MAP1LC3B*) and core sensors (*PINK1*, *PRKN*).
+* **Disinhibition (-):** Significant downregulation of negative regulators (Deubiquitinases *USP30*, *USP15*).
+
+**Conclusion:** Radiation actively promotes mitochondrial clearance by simultaneously "pressing the gas" (machinery) and "releasing the brakes" (regulators).
 
 ## Dataset Structure
+
+* **Source:** NASA GeneLab (OSD-157)
 * **Platform:** Agilent Whole Human Genome Microarray 4x44K
 * **Design:** 5 Donors (Biological Replicates) x 5 Doses (0, 0.5, 2, 5, 8 Gy).
 * **Sample Count:** 25 samples.
 
 ## Analysis Pipeline
-The analysis was performed in R using `limma` for linear modeling and `fgsea` for functional enrichment.
-1. **Normalization:** Background correction (`normexp`) + Quantile Normalization.
-2. **Modeling:** Paired design (`~ Dose + Donor`) to account for high inter-individual variability.
-3. **GSEA:** Multilevel enrichment analysis using Hallmark and KEGG collections.
+
+The analysis was performed in R, evolving from standard enrichment to custom module interrogation.
+
+### 1. Preprocessing
+* Annotation recovery directly from raw data objects.
+* Background correction (`normexp`) + Quantile Normalization.
+* Probe collapsing via `avereps`.
+
+### 2. Statistical Modeling
+* **Paired Linear Model:** `Y ~ Dose + Donor` using `limma` to account for high inter-individual variability.
+* **Interaction Model:** `Y ~ Dose * Donor` to test donor-specificity.
+
+### 3. Functional Analysis
+* **GSEA:** Multilevel enrichment analysis using Hallmark and KEGG collections (`fgsea`).
+* **Custom Modules:** Manually curated gene sets for specific mitochondrial functions (Fusion/Fission, Core, Regulators).
+* **GSVA:** Gene Set Variation Analysis (Gaussian kernel) to compute per-sample pathway activity scores.
 
 ## Repository Contents
-* `scripts/`: R source code for the analysis pipeline.
-* `results/`: Processed tables of Differentially Expressed Genes (DEGs) and GSEA results.
-* `docs/`: Full scientific report.
+
+This repository is organized into the following core analysis files:
+
+* **Full_log.md** (and `Full_log_files/`):
+  Contains the initial comprehensive analysis, including Quality Control, Normalization, PCA, and standard GSEA (Hallmark/KEGG) validation.
+
+* **Complemetary_Analysis_PD_Pathways_and_Mitophagy.md**:
+  Contains the deep-dive analysis focusing on the "Push-Pull" mitophagy mechanism, custom module creation, GSVA scoring, and interaction modeling.
+
+* **OSD157_Report.txt**:
+  A plain text executive summary of the project's objectives, methods, and final scientific conclusions.
 
 Data set: https://osdr.nasa.gov/bio/repo/data/studies/OSD-157
 
