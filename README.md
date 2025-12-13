@@ -1,7 +1,7 @@
 # OSD-157: Transcriptomic Analysis of Ionizing Radiation Response
 
-**Author:** Arthur Pelozo
-**Date:** December 2025
+**Author:** Arthur Pelozo   
+**Date:** December 2025   
 **Platform:** Agilent Whole Human Genome Microarray (Single-Channel)
 
 ## Project Overview
