@@ -26,16 +26,25 @@ Upon decomposing the pathway into custom functional modules, a specific, dose-de
 
 **Conclusion:** Radiation actively promotes mitochondrial clearance by simultaneously "pressing the gas" (machinery) and "releasing the brakes" (regulators).
 
+### 4. Statistical Proof of Systemic Risk (Mediation Analysis)
+To validate that mitochondrial stress drives broader PD molecular features, a "Clean PD Risk Score" (excluding mitophagy genes to prevent circularity) was modeled:
+* **Systemic Coordination:** Mitophagy core activation significantly predicts the upregulation of independent PD risk genes (e.g., lysosomal/metabolic markers) (**p = 0.0019**).
+* **Mediation:** The effect of radiation on PD molecular risk is **statistically mediated** by the mitophagy response (direct radiation effect drops by 37% and loses significance when controlling for mitophagy).
+
 ## Dataset Structure
 
-* **Source:** NASA GeneLab (OSD-157)
+* **Source:** [NASA GeneLab (OSD-157)](https://osdr.nasa.gov/bio/repo/data/studies/OSD-157)
 * **Platform:** Agilent Whole Human Genome Microarray 4x44K
 * **Design:** 5 Donors (Biological Replicates) x 5 Doses (0, 0.5, 2, 5, 8 Gy).
 * **Sample Count:** 25 samples.
+* **Files:**
+    * `GLDS-157_micoarray_E-GEOD-44201.raw.1.zip`
+    * `GLDS-157_micoarray_E-GEOD-44201.raw.2.zip`
+    * `GLDS-157_micoarray_E-GEOD-44201.raw.3.zip`
 
 ## Analysis Pipeline
 
-The analysis was performed in R, evolving from standard enrichment to custom module interrogation.
+The analysis was performed in R, evolving from standard enrichment to custom module interrogation and causal modeling.
 
 ### 1. Preprocessing
 * Annotation recovery directly from raw data objects.
@@ -46,41 +55,30 @@ The analysis was performed in R, evolving from standard enrichment to custom mod
 * **Paired Linear Model:** `Y ~ Dose + Donor` using `limma` to account for high inter-individual variability.
 * **Interaction Model:** `Y ~ Dose * Donor` to test donor-specificity.
 
-### 3. Functional Analysis
+### 3. Functional & Causal Analysis
 * **GSEA:** Multilevel enrichment analysis using Hallmark and KEGG collections (`fgsea`).
 * **Custom Modules:** Manually curated gene sets for specific mitochondrial functions (Fusion/Fission, Core, Regulators).
 * **GSVA:** Gene Set Variation Analysis (Gaussian kernel) to compute per-sample pathway activity scores.
+* **Mediation Analysis:** Testing the causal chain (Radiation -> Mitophagy -> PD Risk) using non-overlapping gene sets ("Clean Score") to prevent mathematical circularity.
 
 ## Repository Contents
 
 This repository is organized into the following core analysis files:
 
-* **Full_log.md** (and `Full_log_files/`):
+* **`Full_log.md`** (and `Full_log_files/`):
   Contains the initial comprehensive analysis, including Quality Control, Normalization, PCA, and standard GSEA (Hallmark/KEGG) validation.
 
-* **Complemetary_Analysis_PD_Pathways_and_Mitophagy.md**:
-  Contains the deep-dive analysis focusing on the "Push-Pull" mitophagy mechanism, custom module creation, GSVA scoring, and interaction modeling.
+* **`Complemetary_Analysis_PD_Pathways_and_Mitophagy.md`**:
+  Contains the deep-dive analysis focusing on the "Push-Pull" mitophagy mechanism, custom module creation, GSVA scoring, and the final mediation/interaction modeling.
 
-* **OSD157_Report.txt**:
+* **`OSD157_Report.txt`**:
   A plain text executive summary of the project's objectives, methods, and final scientific conclusions.
-
-Data set: https://osdr.nasa.gov/bio/repo/data/studies/OSD-157
-
-GLDS-157_micoarray_E-GEOD-44201.raw.3.zip
-92.22 MB
-Tue Dec 05 2017
-
-GLDS-157_micoarray_E-GEOD-44201.raw.1.zip
-178.25 MB
-Tue Dec 05 2017
-
-GLDS-157_micoarray_E-GEOD-44201.raw.2.zip
-180.83 MB
-Tue Dec 05 2017
-
 
 ## Abstract
 
-This study evaluated global gene expression changes in human peripheral blood samples exposed ex vivo to increasing doses of gamma radiation (0 to 8 Gy) following a 48-hour incubation period. Using the NASA GeneLab OSD-157 dataset, a robust bioinformatics pipeline was applied to perform normalization, linear modeling, and Gene Set Enrichment Analysis (GSEA). The results demonstrate a severe transcriptomic response characterized by the activation of the p53 signaling pathway and cell cycle arrest. Furthermore, the hypothesis that ionizing radiation induces molecular signatures associated with Parkinson’s Disease (PD) in leukocytes was specifically tested. No statistically significant enrichment was observed for the canonical PD pathway (NES = 0.79, FDR = 0.95), suggesting an absence of broad molecular overlap in this acute experimental model.
+This study evaluated global gene expression changes in human peripheral blood samples exposed *ex vivo* to increasing doses of gamma radiation (0 to 8 Gy) following a 48-hour incubation period. Using the NASA GeneLab OSD-157 dataset, a robust bioinformatics pipeline was applied to perform normalization, linear modeling, and Gene Set Enrichment Analysis (GSEA). The results demonstrate a severe transcriptomic response characterized by the activation of the p53 signaling pathway and cell cycle arrest. Furthermore, the hypothesis that ionizing radiation induces molecular signatures associated with Parkinson’s Disease (PD) in leukocytes was specifically tested. No statistically significant enrichment was observed for the canonical PD pathway (NES = 0.79, FDR = 0.95), suggesting an absence of broad molecular overlap in this acute experimental model.
 
-However, a targeted interrogation of custom-curated functional modules revealed a specific engagement of mitochondrial quality control mechanisms. Gene Set Variation Analysis (GSVA) uncovered a coordinated, dose-dependent "push-pull" response characterized by the transcriptional upregulation of autophagic execution machinery (SQSTM1, MAP1LC3B) and core sensors (PINK1, PRKN), concurrent with the significant downregulation of negative regulators (USP30, USP15). These findings indicate that while radiation does not recapitulate the full neurodegenerative transcriptomic state in blood, it robustly activates a stress-adaptive mitophagy program by suppressing molecular brakes to facilitate the clearance of damaged organelles.
+However, a targeted interrogation of custom-curated functional modules revealed a specific engagement of mitochondrial quality control mechanisms. Gene Set Variation Analysis (GSVA) uncovered a coordinated, dose-dependent "push-pull" response characterized by the transcriptional upregulation of autophagic execution machinery (*SQSTM1*, *MAP1LC3B*) and core sensors (*PINK1*, *PRKN*), concurrent with the significant downregulation of negative regulators (*USP30*, *USP15*).
+
+**Crucially, statistical modeling using a non-overlapping "clean" risk score confirmed that this mitophagy activation acts as a significant mediator of the broader radiation-induced PD molecular burden. This suggests that the mitochondrial stress response is not an isolated event but a central driver coordinating a systemic transcriptional state resembling molecular features of Parkinsonian vulnerability.**
+
