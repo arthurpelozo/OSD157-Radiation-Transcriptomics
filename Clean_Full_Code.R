@@ -1,6 +1,6 @@
 # ==============================================================================
 # PROJECT: Radiation Analysis (GLDS-157 / Agilent Microarray)
-# AUTHOR: [Your Name]
+# AUTHOR: Arthur Pelozo
 # STATUS: CORRECTED (Added Log2 Transformation)
 # ==============================================================================
 
