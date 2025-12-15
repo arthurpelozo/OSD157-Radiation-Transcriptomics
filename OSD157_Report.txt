@@ -1,10 +1,10 @@
 ================================================================================
 FINAL REPORT
 Radiation Dose-Dependent Effects on Parkinson's Disease-Related Pathways 
-with Focus on Mitophagy and Systemic Risk Mediation
+with Focus on Mitophagy and Systemic Risk Modulation
 
-Author: Arthur Pelozo   
-Date: December 2025   
+Author: Arthur Pelozo    
+Date: December 2025    
 ================================================================================
 
 1. OBJECTIVE
@@ -14,180 +14,151 @@ transcriptional effects associated with Parkinson's disease (PD)-related
 biological mechanisms, with particular emphasis on mitochondrial quality control 
 and mitophagy. 
 
-Given the lack of specificity and biological interpretability of broad pathway 
-databases (e.g., KEGG PD), the analysis progressively converged from broad 
-screening toward biologically grounded, manually curated PD-relevant gene 
-modules. This culminated in a fine-grained dissection of the mitophagy pathway 
-and a rigorous statistical test of its causal role in driving systemic 
-molecular vulnerability.
+Given the lack of specificity of broad pathway databases (e.g., KEGG PD), the 
+analysis progressed from broad screening toward biologically grounded, manually 
+curated PD-relevant gene modules. This culminated in a fine-grained dissection 
+of the mitophagy pathway and a rigorous statistical test of its relationship 
+with systemic molecular vulnerability.
 
 2. METHODOLOGY
 --------------------------------------------------------------------------------
 
 2.1. Data Processing and Pre-processing
 Raw intensity files (.txt) from the Agilent platform were processed using the 
-'limma' package in the R environment. During the initial import, annotation 
-failures were detected in the native .adf files. To resolve this, gene 
-identifiers were extracted directly from the raw data objects (RG$genes), 
-ensuring a 1:1 alignment between probe intensities and gene symbols.
+'limma' package in the R environment. Gene identifiers were extracted directly 
+from the raw data objects (RG$genes) to ensure accurate annotation.
 
-Strict quality control filters were applied to remove technical control probes 
-and probes lacking valid gene annotation.
-
-- Background Correction: Performed using the 'normexp' method (offset 50) to 
-  prevent false positives among non-expressed genes.
-- Normalization: Inter-array normalization was conducted using the Quantile 
-  method, ensuring statistical comparability across all 25 samples.
-- Probe Collapsing: Duplicate probes were collapsed by averaging expression 
-  values (avereps), resulting in 30,587 unique genes.
+Strict quality control filters were applied:
+- Background Correction: Performed using the 'normexp' method (offset 50).
+- Normalization: Quantile method to ensure comparability across 25 samples.
+- Log2 Transformation: CRITICAL STEP. Raw intensities were Log2-transformed 
+  prior to analysis to stabilize variance and meet linear modeling assumptions.
+- Probe Collapsing: Duplicate probes were averaged (avereps), resulting in 
+  30,587 unique genes.
 
 2.2. Statistical Modeling (Linear & Interaction Models)
-Exploratory PCA revealed a strong biological batch effect associated with the 
-donors. To isolate the radiation effect, a paired additive linear model was 
-adopted (Y ~ DoseNum + Donor). A full interaction model (Y ~ DoseNum * Donor) 
-was also fitted to investigate donor-specific heterogeneity. Moderated 
-t-statistics (eBayes) were used to generate the gene ranking.
+A paired additive linear model was adopted (Y ~ DoseNum + Donor) to isolate the 
+radiation effect from donor heterogeneity. Moderated t-statistics (eBayes) were 
+used to generate the gene ranking.
 
 2.3. Functional Analysis Strategy (The "Funnel" Approach)
-The functional analysis followed a hierarchical "funnel" strategy to refine 
-the biological signal:
-
 Step 1: Global Screening (Standard GSEA)
 Interrogation of Hallmark and KEGG collections to validate general radiation 
-responses (p53, Inflammation).
+responses (p53, Inflammation) and identifying key mechanisms (Lysosome).
 
-Step 2: Targeted PD Module Screening (Intermediate Step)
-Before decomposing the mitophagy pathway, three broad, manually curated 
-PD-relevant modules were constructed to test specific biological hypotheses 
-and localize the signal:
-   a. PD_mito_complexI: Focus on respiratory chain dysfunction (NDUFS/V genes).
-   b. PD_dopaminergic_synapse: Focus on dopamine synthesis/transport (TH, SLC6A3).
-   c. PD_mitophagy_PINK1_PRKN: Focus on general mitophagy markers.
+Step 2: Targeted PD Module Screening (Broad Modules)
+Testing three manually curated PD-relevant modules:
+   a. PD_mito_complexI (Respiratory chain)
+   b. PD_dopaminergic_synapse (Dopamine metabolism)
+   c. PD_mitophagy_PINK1_PRKN (Mitophagy markers)
 
-Step 3: Fine-Grained Mitophagy Decomposition (Final Focus)
-Based on the results from Step 2 (see Results), the mitophagy pathway was 
-selected for deep-dive analysis and structurally decomposed into functional 
-units:
-   - Core Sensors: PINK1, PARK7, FBXO7, ATP13A2
-   - Regulators: USP30, USP15 (Deubiquitinases)
-   - Execution Markers: SQSTM1 (p62), MAP1LC3B (LC3B)
+Step 3: Fine-Grained Mitophagy Decomposition ("Push-Pull")
+Structural decomposition of the mitophagy pathway into functional units:
+   - Core Sensors (PINK1, PARK7...)
+   - Regulators (USP30, USP15)
+   - Execution Markers (SQSTM1, MAP1LC3B)
 
 2.4. Pathway Activity Scoring (GSVA)
-To assess the activation of these custom modules on a per-sample basis, Gene 
-Set Variation Analysis (GSVA v2.4.1) was employed using Gaussian kernels.
+Gene Set Variation Analysis (GSVA) with Gaussian kernels was used to calculate 
+per-sample enrichment scores.
 
-2.5. Molecular Risk Modeling and Mediation Analysis (New Protocol)
-To test whether mitophagy acts as a driver for broader PD risk, a specific 
-statistical protocol was designed to avoid mathematical circularity:
-
-1. "Clean" PD Risk Score: A composite expression score was calculated using 15 
-   genes associated with PD vulnerability (e.g., LRRK2, GBA, VDAC1). Crucially, 
-   all genes belonging to the mitophagy core were EXCLUDED from this score.
-2. Mediation Testing: Linear models were fitted to test the causal chain:
+2.5. Molecular Risk Modeling (Mediation vs. Parallelism)
+To test the relationship between Mitophagy and PD Risk:
+1. "Clean" PD Risk Score: Calculated using 15 non-mitophagy vulnerability genes 
+   (e.g., LRRK2, GBA, VDAC1), excluding overlaps.
+2. Modeling:
    - Model A: Radiation -> Clean PD Risk
-   - Model B: Mitophagy Core -> Clean PD Risk (The "Fire Test")
-   - Model C: Radiation + Mitophagy -> Clean PD Risk (Mediation)
+   - Model C: Radiation + Mitophagy -> Clean PD Risk (to test independence).
 
 3. RESULTS
 --------------------------------------------------------------------------------
 
 3.1. Quality Control and Biological Validation (Step 1)
-- DNA Damage Response: HALLMARK_P53_PATHWAY strongly activated (NES = +2.37, 
-  p < 10^-11).
-- Inflammation: TNFA_SIGNALING_VIA_NFKB strongly induced (NES = +1.96, p < 2.34 x 10^-6).
+The Log2-corrected data showed robust biological validation:
+- DNA Damage Response: HALLMARK_P53_PATHWAY strongly activated (NES = +2.42, 
+  p < 10^-12).
+- Inflammation: TNFA_SIGNALING_VIA_NFKB strongly induced (NES = +2.04, 
+  p < 10^-7).
+- Lysosomal Activation: A massive induction of the KEGG_LYSOSOME pathway was 
+  detected (NES = +2.82, p < 10^-17), supporting the clearance hypothesis.
 
 3.2. Evaluation of Targeted PD Modules (Step 2 - Screening)
-The intermediate screening of the three specific PD modules yielded a clear 
-result that directed the rest of the study:
-- PD_mito_complexI: No significant enrichment (NES = -0.90, p = 0.59).
-- PD_dopaminergic_synapse: No significant enrichment (NES = +0.93, p = 0.53).
-- PD_mitophagy_PINK1_PRKN: Showed a clear signal approaching significance (NES ~ 1.64, adj.p ~ 0.059).
+Screening of broad modules confirmed specificity:
+- PD_mito_complexI: No significant enrichment (logFC = -0.016, p = 0.24).
+- PD_dopaminergic_synapse: No significant enrichment (logFC = +0.018, p = 0.27).
+- PD_mitophagy_PINK1_PRKN: Showed highly significant activation (logFC = +0.059, p = 0.00019).
 
-Conclusion from Screening: The radiation response is not affecting dopamine 
-metabolism or the respiratory chain per se, but is selectively engaging the 
-mitophagy machinery. This justified the exclusive focus on mitophagy for the 
-subsequent deep-dive.
+Using GSEA to screen specific pathway enrichment (NES), we confirmed high 
+specificity of the radiation response:
+- PD_mito_complexI: No significant enrichment (NES = -0.94, p = 0.55).
+- PD_dopaminergic_synapse: No significant enrichment (NES = +0.92, p = 0.56).
+- PD_mitophagy_PINK1_PRKN: Showed significant activation (NES = +1.72, p = 0.019).
+
+The response is specific to mitochondrial quality control, with no 
+evidence of acute neurodegeneration or general bioenergetic failure.
 
 3.3. Fine-Grained Mitophagy Analysis (Step 3 - "Push-Pull" Mechanism)
-Upon dissecting the mitophagy pathway, a sophisticated regulation emerged:
-1. Activation (+): Autophagy markers (SQSTM1, LC3B)(logFC = +0.066, adj.p = 0.001) and Core Sensors 
-   (PINK1/PARK7)(logFC = +0.033, adj.p = 0.024) were upregulated (logFC > 0, p < 0.05).
+Dissection of the pathway confirmed a coordinated "Push-Pull" mechanism:
+1. Activation (+): Autophagy markers (SQSTM1, LC3B) were significantly upregulated 
+   (logFC = +0.064, p = 0.0001).
 2. Disinhibition (-): Negative Regulators (USP30/USP15) were significantly 
-   repressed (logFC -0.082, p = 0.002).
+   repressed (logFC = -0.086, p = 0.0001).
 
-3.4. Mechanistic Mediation of PD Molecular Risk (Key Finding)
-To confirm systemic relevance, the "Clean PD Risk Score" (comprising 15 non-
-mitophagy susceptibility genes, e.g., LRRK2, GBA, VDAC1) was subjected to a 
-three-step causal mediation analysis:
+3.4. Mechanistic Analysis of PD Molecular Risk (The "Dual Signature")
+To understand systemic relevance, the "Clean PD Risk Score" was analyzed:
 
 1. Total Effect (Radiation -> Risk): 
    Linear modeling confirmed that radiation dose significantly drives the 
-   expression of PD risk genes (Coefficient = +32.46, p = 0.0028). For every 
-   Gray of radiation, the aggregate molecular risk burden increased by ~32 units.
+   expression of PD risk genes (Coefficient = +0.012, p = 0.0013). 
+   *Note: Coefficient reflects Log2 scale; effect is robust and linear.*
 
-2. Systemic Coordination (Mitophagy -> Risk): 
-   Even after removing overlapping genes to prevent circularity, the activation 
-   of the Mitophagy Core was a strong predictor of the Clean PD Risk Score 
-   (Coefficient = +551.03, p = 0.0019). This confirms that mitochondrial 
-   maintenance is tightly coupled to the broader vulnerability network.
-
-3. Mediation Effect (The Causal Proof): 
+2. Dual Signature Proof (Model C): 
    When controlling for Mitophagy activity in the combined model:
-   - The direct effect of radiation dropped from 32.46 to 20.29 (a ~37.5% 
-     reduction in effect size).
-   - The radiation effect lost statistical significance (p = 0.064), while 
-     mitophagy remained a significant driver (p = 0.043).
+   - The direct effect of radiation remained significant (p = 0.013).
+   - The Mitophagy term became non-significant (p = 0.30) in predicting risk 
+     variance within the same dose groups.
 
-   Conclusion: The radiation-induced elevation in PD molecular risk is 
-   statistically mediated by the engagement of the mitophagy machinery.
-
+   Conclusion: Unlike simple mediation, this indicates a "Dual Signature." 
+   Radiation independently forces a metabolic cleanup cost (Mitophagy) AND 
+   activates transcriptomic vulnerability (Risk Genes) in parallel.
 
 4. DISCUSSION
 --------------------------------------------------------------------------------
 4.1. Specificity of the Response 
-This analysis demonstrates that the OSD-157 dataset is technically robust but 
-highly specific. By first screening broad modules, we ruled out direct effects on dopaminergic synapses or Complex I 
-(p > 0.50). This negative result is biologically consistent with the tissue source 
-(peripheral blood) and confirms that the cells are not undergoing acute 
-neurodegeneration or loss of cellular identity. Instead, they are mounting a 
-specific, adaptive stress response.
+The analysis rules out generic damage. The lack of significance for Complex I 
+and Synapses (p > 0.20) confirms that the cells are not undergoing acute 
+metabolic collapse. The response is a specific adaptation of the quality 
+control machinery.
 
 4.2. The "Push-Pull" Mechanism
-The dissection of the mitophagy pathway revealed a sophisticated regulatory logic 
-termed here as the "Push-Pull" mechanism. Radiation increase the 
-expression of damage sensors (PINK1/PRKN/SQSTM1) and concurrently suppressed the 
-negative regulators (USP30/USP15). 
+The corrected data reinforces the "Push-Pull" logic. Radiation increases 
+damage sensors (logFC +0.033) and concurrently suppresses the "brake" USP30 
+(logFC -0.086). This transcriptional repression of deubiquitinases lowers the 
+threshold for mitophagy, optimizing the system for rapid clearance of 
+radiation-damaged organelles.
 
-Biologically, USP30 acts as a "brake" on mitophagy by removing ubiquitin tags from 
-mitochondria. By transcriptionally repressing this brake (logFC -0.082), the 
-cells effectively lower the threshold for triggering mitophagy. This suggests a 
-state of "High Flux Demand," where the system is optimized for rapid clearance 
-of damaged organelles at the expense of regulatory checks and balances.
+4.3. Dual Vulnerability Signature
+The persistent significance of the radiation term in the full model (p = 0.013) 
+supports a "Parallel Hit" model rather than simple mediation. 
 
-4.3. Mediation and Latent Vulnerability
-The most significant finding is the statistical proof of mediation. The analysis 
-confirms that the mitochondrial stress response is not an isolated event but the 
-central driver of a broader "PD-like" transcriptional state. 
+Radiation acts as a systemic stressor that branches into two simultaneous 
+consequences:
+1. The Metabolic Response: Activation of the mitophagy/lysosomal machinery to 
+   clear physical damage.
+2. The Transcriptomic Scar: Direct upregulation of susceptibility genes (LRRK2, 
+   VDAC), independent of the cleaning process.
 
-Even after removing overlapping genes, the activity of the Mitophagy Core predicted 
-the expression of independent risk genes (LRRK2, GBA, VDAC1) with high significance 
-(p = 0.0019). The mediation model indicates that ~37% of the radiation-induced 
-molecular risk is driven directly by this mitochondrial engagement.
-
-This points to a conclusion of Latent Transcriptomic Vulnerability. The 
-radiation does not cause the disease (as downstream systems remain intact), but 
-it forces the cells to mimic the gene expression profile of genetically susceptible 
-individuals. The cells are maintaining homeostasis, but the bioenergetic cost of 
-this maintenance creates a fragile state, potentially reducing resilience to 
-secondary stressors (e.g., aging or environmental toxins).
+This "Dual Signature" implies that the cellular state is fragile on two fronts: 
+high metabolic demand for cleaning and high expression of genetic risk factors.
 
 5. CONCLUSION
 --------------------------------------------------------------------------------
-Ionizing radiation does not "cause" Parkinson's Disease in this 
-acute model, but it induces a state of Latent Transcriptomic Vulnerability. 
-By forcing cells to dedicate maximum capacity to mitochondrial maintenance, 
-radiation erodes the bioenergetic resilience of the system, potentially lowering 
-the threshold for disease onset upon secondary exposures.
+Ionizing radiation induces a specific state of "Dual Transcriptomic Vulnerability." 
+It forces cells to engage a robust "Push-Pull" mitophagy mechanism (validated by 
+USP30 repression and Lysosomal induction) while simultaneously and independently 
+upregulating a core set of Parkinson's disease risk genes. This suggests that 
+radiation exposure creates a latent molecular fragility that extends beyond 
+simple mitochondrial damage.
 
 
 
