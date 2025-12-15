@@ -184,10 +184,11 @@ secondary stressors (e.g., aging or environmental toxins).
 5. CONCLUSION
 --------------------------------------------------------------------------------
 Ionizing radiation does not "cause" Parkinson's Disease in this 
-acute model, but it induces a state of **Latent Transcriptomic Vulnerability**. 
+acute model, but it induces a state of Latent Transcriptomic Vulnerability. 
 By forcing cells to dedicate maximum capacity to mitochondrial maintenance, 
 radiation erodes the bioenergetic resilience of the system, potentially lowering 
 the threshold for disease onset upon secondary exposures.
+
 
 
 
