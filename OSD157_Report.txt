@@ -2,6 +2,9 @@
 FINAL REPORT
 Radiation Dose-Dependent Effects on Parkinson's Disease-Related Pathways 
 with Focus on Mitophagy and Systemic Risk Mediation
+
+Author: Arthur Pelozo   
+Date: December 2025   
 ================================================================================
 
 1. OBJECTIVE
@@ -172,5 +175,6 @@ VDACs).
 3. Systemic Risk: This mitophagy activation acts as a primary mediator, driving 
    a broader transcriptional state that resembles the molecular vulnerability 
    features of Parkinson's Disease.
+
 
 
