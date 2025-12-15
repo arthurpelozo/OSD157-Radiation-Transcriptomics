@@ -105,22 +105,28 @@ Dissection of the pathway confirmed a coordinated "Push-Pull" mechanism:
    repressed (logFC = -0.086, p = 0.0001).
 
 3.4. Mechanistic Analysis of PD Molecular Risk (The "Dual Signature")
-To understand systemic relevance, the "Clean PD Risk Score" was analyzed:
+To understand systemic relevance, the relationship between radiation, mitophagy, 
+and the "Clean PD Risk Score" was analyzed via three-step modeling:
 
-1. Total Effect (Radiation -> Risk): 
-   Linear modeling confirmed that radiation dose significantly drives the 
-   expression of PD risk genes (Coefficient = +0.012, p = 0.0013). 
-   *Note: Coefficient reflects Log2 scale; effect is robust and linear.*
+1. Total Effect (Radiation -> Risk):
+   Linear modeling (Model A) confirmed that radiation dose significantly drives the 
+   expression of PD risk genes (Coefficient = +0.012, p = 0.0026). 
+   This establishes the "Transcriptomic Scar": a baseline increase in genetic 
+   vulnerability of ~0.85% per Gray.
 
-2. Dual Signature Proof (Model C): 
-   When controlling for Mitophagy activity in the combined model:
-   - The direct effect of radiation remained significant (p = 0.013).
-   - The Mitophagy term became non-significant (p = 0.30) in predicting risk 
-     variance within the same dose groups.
+2. Parallel Metabolic Activation (Radiation -> Mitophagy):
+   Independent of risk, radiation significantly upregulated the Mitophagy Core 
+   module (Coefficient = +0.034, p = 0.020). This confirms that the 
+   "Push-Pull" cleanup mechanism is a direct downstream consequence of the 
+   exposure.
 
-   Conclusion: Unlike simple mediation, this indicates a "Dual Signature." 
-   Radiation independently forces a metabolic cleanup cost (Mitophagy) AND 
-   activates transcriptomic vulnerability (Risk Genes) in parallel.
+3. Dual Signature Proof (Independence Test):
+   When controlling for Mitophagy activity in the combined model (Model C):
+   - The direct effect of radiation on Risk remained robust (p = 0.016).
+   - The Mitophagy term became non-significant (p = 0.44).
+   - The radiation coefficient dropped only slightly (from 0.0121 to 0.0106), 
+     indicating that Mitophagy explains very little of the risk variance.
+
 
 4. DISCUSSION
 --------------------------------------------------------------------------------
@@ -159,6 +165,7 @@ USP30 repression and Lysosomal induction) while simultaneously and independently
 upregulating a core set of Parkinson's disease risk genes. This suggests that 
 radiation exposure creates a latent molecular fragility that extends beyond 
 simple mitochondrial damage.
+
 
 
 
