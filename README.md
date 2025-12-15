@@ -13,13 +13,13 @@ This repository contains the bioinformatics analysis pipeline and results for th
 
 ## Key Findings
 
-### 1. Validation (Positive Control)
+### 1. Validation
 * Strong activation of DNA damage response (p53) and cell cycle arrest (G2/M) pathways, confirming the biological efficacy of the radiation.
 
-### 2. Broad PD Hypothesis (Negative Result)
+### 2. Broad PD Hypothesis 
 * No statistically significant enrichment was found for the generic *KEGG Parkinson's Disease* pathway (NES = 0.79, FDR = 0.95), suggesting no broad molecular link to the disease signature in blood.
 
-### 3. Targeted Mitophagy Discovery (Novel Insight)
+### 3. Targeted Mitophagy Discovery 
 Upon decomposing the pathway into custom functional modules, a specific, dose-dependent **"Push-Pull" Mitophagy Mechanism** was identified:
 * **Activation (+):** Upregulation of autophagic execution markers (*SQSTM1*, *MAP1LC3B*) and core sensors (*PINK1*, *PRKN*).
 * **Disinhibition (-):** Significant downregulation of negative regulators (Deubiquitinases *USP30*, *USP15*).
