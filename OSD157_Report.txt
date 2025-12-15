@@ -94,15 +94,14 @@ statistical protocol was designed to avoid mathematical circularity:
 3.1. Quality Control and Biological Validation (Step 1)
 - DNA Damage Response: HALLMARK_P53_PATHWAY strongly activated (NES = +2.37, 
   p < 10^-11).
-- Inflammation: TNFA_SIGNALING_VIA_NFKB strongly induced (NES = +1.96).
+- Inflammation: TNFA_SIGNALING_VIA_NFKB strongly induced (NES = +1.96, p < 2.34 x 10^-6).
 
 3.2. Evaluation of Targeted PD Modules (Step 2 - Screening)
 The intermediate screening of the three specific PD modules yielded a clear 
 result that directed the rest of the study:
-- PD_mito_complexI: No significant enrichment.
-- PD_dopaminergic_synapse: No significant enrichment.
-- PD_mitophagy_PINK1_PRKN: Showed a clear signal approaching significance 
-  (NES ~ 1.64, adj.p ~ 0.059).
+- PD_mito_complexI: No significant enrichment (NES = -0.90, p = 0.59).
+- PD_dopaminergic_synapse: No significant enrichment (NES = +0.93, p = 0.53).
+- PD_mitophagy_PINK1_PRKN: Showed a clear signal approaching significance (NES ~ 1.64, adj.p ~ 0.059).
 
 Conclusion from Screening: The radiation response is not affecting dopamine 
 metabolism or the respiratory chain per se, but is selectively engaging the 
@@ -175,6 +174,7 @@ VDACs).
 3. Systemic Risk: This mitophagy activation acts as a primary mediator, driving 
    a broader transcriptional state that resembles the molecular vulnerability 
    features of Parkinson's Disease.
+
 
 
 
