@@ -110,70 +110,84 @@ subsequent deep-dive.
 
 3.3. Fine-Grained Mitophagy Analysis (Step 3 - "Push-Pull" Mechanism)
 Upon dissecting the mitophagy pathway, a sophisticated regulation emerged:
-1. Activation (+): Autophagy markers (SQSTM1, LC3B) and Core Sensors 
-   (PINK1/PARK7) were upregulated (logFC > 0, p < 0.05).
+1. Activation (+): Autophagy markers (SQSTM1, LC3B)(logFC = +0.066, adj.p = 0.001) and Core Sensors 
+   (PINK1/PARK7)(logFC = +0.033, adj.p = 0.024) were upregulated (logFC > 0, p < 0.05).
 2. Disinhibition (-): Negative Regulators (USP30/USP15) were significantly 
    repressed (logFC -0.082, p = 0.002).
 
 3.4. Mechanistic Mediation of PD Molecular Risk (Key Finding)
-To confirm systemic relevance, the "Clean PD Risk Score" was modeled:
-1. Systemic Coordination: Even after removing overlapping genes, Mitophagy Core 
-   activation strongly predicted the upregulation of independent PD risk genes 
-   (p = 0.0019).
-2. Mediation Effect: When controlling for Mitophagy, the direct effect of 
-   radiation on PD Risk dropped by ~37% and lost statistical significance 
-   (p = 0.06), proving that mitophagy is the statistical mediator of this risk.
+To confirm systemic relevance, the "Clean PD Risk Score" (comprising 15 non-
+mitophagy susceptibility genes, e.g., LRRK2, GBA, VDAC1) was subjected to a 
+three-step causal mediation analysis:
+
+1. Total Effect (Radiation -> Risk): 
+   Linear modeling confirmed that radiation dose significantly drives the 
+   expression of PD risk genes (Coefficient = +32.46, p = 0.0028). For every 
+   Gray of radiation, the aggregate molecular risk burden increased by ~32 units.
+
+2. Systemic Coordination (Mitophagy -> Risk): 
+   Even after removing overlapping genes to prevent circularity, the activation 
+   of the Mitophagy Core was a strong predictor of the Clean PD Risk Score 
+   (Coefficient = +551.03, p = 0.0019). This confirms that mitochondrial 
+   maintenance is tightly coupled to the broader vulnerability network.
+
+3. Mediation Effect (The Causal Proof): 
+   When controlling for Mitophagy activity in the combined model:
+   - The direct effect of radiation dropped from 32.46 to 20.29 (a ~37.5% 
+     reduction in effect size).
+   - The radiation effect lost statistical significance (p = 0.064), while 
+     mitophagy remained a significant driver (p = 0.043).
+
+   Conclusion: The radiation-induced elevation in PD molecular risk is 
+   statistically mediated by the engagement of the mitophagy machinery.
 
 
-4. RISK ASSESSMENT
+4. DISCUSSION
 --------------------------------------------------------------------------------
-Based on the quantitative mediation models, the level of risk identified in this 
-study can be classified as "Latent Transcriptomic Vulnerability."
+4.1. Specificity of the Response 
+This analysis demonstrates that the OSD-157 dataset is technically robust but 
+highly specific. By first screening broad modules, we ruled out direct effects on dopaminergic synapses or Complex I 
+(p > 0.50). This negative result is biologically consistent with the tissue source 
+(peripheral blood) and confirms that the cells are not undergoing acute 
+neurodegeneration or loss of cellular identity. Instead, they are mounting a 
+specific, adaptive stress response.
 
-1. Quantitative Burden:
-   The linear models indicate that for every 1 Gy increase in radiation, the 
-   aggregate expression of PD susceptibility genes increases by ~32 units 
-   (Coefficient +32.46). This suggests a state of "Genetic Priming," where 
-   radiation forces cells to mimic the transcriptional profile of genetically 
-   susceptible individuals.
+4.2. The "Push-Pull" Mechanism
+The dissection of the mitophagy pathway revealed a sophisticated regulatory logic 
+termed here as the "Push-Pull" mechanism. Radiation increase the 
+expression of damage sensors (PINK1/PRKN/SQSTM1) and concurrently suppressed the 
+negative regulators (USP30/USP15). 
 
-2. Mechanism of Vulnerability:
-   The mediation analysis proves that ~37% of this induced risk is directly 
-   driven by the mitochondrial stress response. This implies that the "cost" 
-   of keeping the cell healthy after radiation is paid for by depleting the 
-   mitochondrial reserve capacity.
+Biologically, USP30 acts as a "brake" on mitophagy by removing ubiquitin tags from 
+mitochondria. By transcriptionally repressing this brake (logFC -0.082), the 
+cells effectively lower the threshold for triggering mitophagy. This suggests a 
+state of "High Flux Demand," where the system is optimized for rapid clearance 
+of damaged organelles at the expense of regulatory checks and balances.
 
-3. Interpretation:
-   The absence of downstream failure (Complex I/Dopamine markers remain stable) 
-   indicates that the cells are not in a disease state ("System Failure") but 
-   in a state of "Hyper-Maintenance." The biological system is stable but 
-   running at maximum capacity to repair damage, leaving it brittle and highly 
-   susceptible to secondary hits (e.g., aging, environmental toxins).
+4.3. Mediation and Latent Vulnerability
+The most significant finding is the statistical proof of mediation. The analysis 
+confirms that the mitochondrial stress response is not an isolated event but the 
+central driver of a broader "PD-like" transcriptional state. 
 
-5. DISCUSSION
+Even after removing overlapping genes, the activity of the Mitophagy Core predicted 
+the expression of independent risk genes (LRRK2, GBA, VDAC1) with high significance 
+(p = 0.0019). The mediation model indicates that ~37% of the radiation-induced 
+molecular risk is driven directly by this mitochondrial engagement.
+
+This points to a conclusion of Latent Transcriptomic Vulnerability. The 
+radiation does not cause the disease (as downstream systems remain intact), but 
+it forces the cells to mimic the gene expression profile of genetically susceptible 
+individuals. The cells are maintaining homeostasis, but the bioenergetic cost of 
+this maintenance creates a fragile state, potentially reducing resilience to 
+secondary stressors (e.g., aging or environmental toxins).
+
+5. CONCLUSION
 --------------------------------------------------------------------------------
-This analysis demonstrates that while the OSD-157 dataset does not support a 
-global "PD-like" transcriptomic signature, it uncovers a specific engagement 
-of mitochondrial quality control.
-
-The "Funnel" analysis strategy was crucial: by first screening broad modules, 
-we ruled out direct effects on dopaminergic synapses or Complex I (likely due 
-to tissue specificity). This allowed us to identify the "Push-Pull" mitophagy 
-mechanism (Up: PINK1/PRKN, Down: USP30).
-
-Most importantly, the mediation analysis proves that this mitochondrial stress 
-response is not isolated. It acts as a central driver, coordinating a systemic 
-transcriptional upregulation of broader PD vulnerability genes (LRRK2, GBA, 
-VDACs).
-
-6. CONCLUSION
---------------------------------------------------------------------------------
-1. Selectivity: Radiation does not affect dopaminergic or respiratory chain 
-   genes in blood.
-2. Mechanism: It robustly activates a "Push-Pull" mitophagy program.
-3. Systemic Risk: This mitophagy activation acts as a primary mediator, driving 
-   a broader transcriptional state that resembles the molecular vulnerability 
-   features of Parkinson's Disease.
+Ionizing radiation does not "cause" Parkinson's Disease in this 
+acute model, but it induces a state of **Latent Transcriptomic Vulnerability**. 
+By forcing cells to dedicate maximum capacity to mitochondrial maintenance, 
+radiation erodes the bioenergetic resilience of the system, potentially lowering 
+the threshold for disease onset upon secondary exposures.
 
 
 
