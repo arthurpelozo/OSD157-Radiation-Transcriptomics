@@ -1,203 +1,164 @@
 # ==============================================================================
 # PROJECT: Radiation Analysis (GLDS-157 / Agilent Microarray)
-# AUTHOR: Arthur Pelozo
-# DATE: December 2025
+# AUTHOR: [Your Name]
+# STATUS: CORRECTED (Added Log2 Transformation)
 # ==============================================================================
 
 # 1. SETUP AND LIBRARIES -------------------------------------------------------
 
-# Set working directory
 setwd("C:/Users/arthu/Downloads/projeto_radiacao_PD")
 
-# Loading necessary libraries for Microarray analysis and GSEA
-library(limma)
-library(edgeR)
-library(sva)
-library(biomaRt)
-library(fgsea)
-library(msigdbr)
-library(GSVA)
-library(pheatmap)
-library(ggplot2)
-library(RColorBrewer)
-library(org.Hs.eg.db)
-library(AnnotationDbi)
-library(readr)
-library(dplyr)
-library(tibble)
-library(stringr)
-library(cowplot)
-library(data.table)
+# Load libraries
+suppressPackageStartupMessages({
+  library(limma)
+  library(edgeR)
+  library(sva)
+  library(biomaRt)
+  library(fgsea)
+  library(msigdbr)
+  library(GSVA)
+  library(pheatmap)
+  library(ggplot2)
+  library(RColorBrewer)
+  library(org.Hs.eg.db)
+  library(AnnotationDbi)
+  library(readr)
+  library(dplyr)
+  library(tibble)
+  library(stringr)
+  library(cowplot)
+  library(data.table)
+})
 
-# 2. METADATA CREATION (TARGETS) -----------------------------------------------
+# 2. METADATA CREATION ---------------------------------------------------------
 
-# List raw data files
+# List files and create targets
 files <- list.files("data", pattern = "\\.txt$", full.names = TRUE)
+targets <- data.frame(FileName = files, BaseName = basename(files), stringsAsFactors = FALSE)
 
-# Create initial targets dataframe
-targets <- data.frame(
-  FileName = files,
-  BaseName = basename(files),
-  stringsAsFactors = FALSE
-)
+# Filter for experimental files
+targets <- targets[grepl("_[A-Za-z]_[0-9\\.]+Gy", targets$BaseName), ]
 
-# Filter only files matching the experiment pattern (_<letter>_<number>Gy)
-pattern_keep <- "_[A-Za-z]_[0-9\\.]+Gy"
-targets <- targets[grepl(pattern_keep, targets$BaseName), ]
-
-# Parse metadata from filenames using Regex
-# Extract Dose (e.g., "0.5Gy") and numeric value (e.g., 0.5)
+# Extract Metadata
 targets$Dose <- str_extract(targets$BaseName, "[0-9\\.]+Gy")
 targets$DoseNum <- as.numeric(str_extract(targets$Dose, "[0-9\\.]+"))
-
-# Extract Donor ID (e.g., "a", "b", "X")
 targets$Donor <- str_extract(targets$BaseName, "_([A-Za-z])_")
 targets$Donor <- gsub("_", "", targets$Donor)
-
-# Create clean SampleID
 targets$SampleID <- gsub("\\.txt$", "", targets$BaseName)
 
-# Verify metadata structure
-print(head(targets))
-print(table(targets$Donor))
-print(table(targets$DoseNum))
+# Verify Design
+print(table(targets$Donor, targets$DoseNum))
 
-# 3. DATA IMPORT AND NORMALIZATION ---------------------------------------------
+# 3. DATA IMPORT AND NORMALIZATION (THE FIX) -----------------------------------
 
-# Read Agilent microarray data (Green channel only)
+message("Reading Agilent files...")
 RG <- read.maimages(targets$FileName, source = "agilent", green.only = TRUE)
 
-# Background correction (NormExp method with offset to avoid negative values)
+# A. Background Correction (NormExp + Offset)
+# Offset=50 is standard to ensure we don't log(negative) or log(0) later
 RG.bc <- backgroundCorrect(RG, method = "normexp", offset = 50)
 
-# Quantile normalization between arrays
-expr_matrix <- normalizeBetweenArrays(RG.bc$E, method = "quantile")
+# B. *** THE CRITICAL FIX: LOG2 TRANSFORMATION ***
+# We log-transform BEFORE normalization to stabilize variance.
+message("Applying Log2 transformation...")
+E_log <- log2(RG.bc$E)
 
-# Assign sample names to columns
+# C. Quantile Normalization
+# Now we normalize the log-values, not the raw intensities.
+expr_matrix <- normalizeBetweenArrays(E_log, method = "quantile")
 colnames(expr_matrix) <- targets$SampleID
 
-# Quick boxplot to check normalization
-boxplot(expr_matrix, las = 2, main = "Normalized Expression (Quantile)", outline = FALSE)
+# D. Verification Plot (Density)
+# We plot the density to confirm values are now in the 5-16 range, not 0-60,000
+plotDensities(expr_matrix, main = "Log2 Expression Densities (After Fix)", legend = FALSE)
 
-# 4. QUALITY CONTROL (PCA) -----------------------------------------------------
+# 4. QC: PCA -------------------------------------------------------------------
 
-# Prepare data for PCA (remove rows with NAs if any)
 expr_no_na <- expr_matrix[complete.cases(expr_matrix), ]
-
-# Run PCA
 pca <- prcomp(t(expr_no_na), scale. = TRUE)
 
-# Create dataframe for plotting
 df_pca <- data.frame(
   PC1 = pca$x[, 1],
   PC2 = pca$x[, 2],
   Dose = as.factor(targets$DoseNum),
-  Donor = as.factor(targets$Donor),
-  Sample = targets$SampleID
+  Donor = as.factor(targets$Donor)
 )
 
-# Plot PCA
 ggplot(df_pca, aes(PC1, PC2, color = Dose, shape = Donor)) +
   geom_point(size = 4) +
   theme_minimal() +
-  labs(
-    title = "PCA — Normalized Agilent Microarrays",
-    color = "Dose (Gy)",
-    shape = "Donor"
-  )
+  labs(title = "PCA — Log2 Normalized Data")
 
-# 5. DIFFERENTIAL EXPRESSION ANALYSIS (LIMMA) ----------------------------------
+# 5. DIFFERENTIAL EXPRESSION (LIMMA) -------------------------------------------
 
-# Ensure factors are set correctly
 targets$Donor <- factor(targets$Donor)
 targets$DoseNum <- as.numeric(targets$DoseNum)
 
-# Create design matrix: Linear trend for Dose + blocking for Donor
+# Design Matrix
 design <- model.matrix(~ DoseNum + Donor, data = targets)
 
-# Fit linear model
+# Fit Model
 fit <- lmFit(expr_matrix, design)
 fit <- eBayes(fit)
 
-# Extract results for the Dose trend (DoseNum coefficient)
+# Extract Results (Dose Trend)
 res_trend <- topTable(fit, coef = "DoseNum", number = Inf, sort.by = "P")
 
-# Save initial probe-level results
-if (!dir.exists("results")) dir.create("results")
-write.csv(res_trend, file = "results/OSD157_trend_per_probe.csv", row.names = TRUE)
+# SANITY CHECK: Look at the new logFC and AveExpr
+# AveExpr should be around 7-10. logFC should be small (e.g., 0.5, 1.0, -0.8).
+# If logFC is >100, something is still wrong.
+print(head(res_trend))
 
-# Check number of significant probes (FDR < 0.05)
-print(paste("Significant probes:", sum(res_trend$adj.P.Val < 0.05)))
+# Save
+if (!dir.exists("results")) dir.create("results")
+write.csv(res_trend, file = "results/OSD157_trend_log2_probe.csv", row.names = TRUE)
 
 # 6. ANNOTATION AND GENE COLLAPSING --------------------------------------------
 
-# Extract gene symbols from the RG object
 probe2gene <- RG$genes$GeneName
-
-# Filter valid probes (remove control probes and NAs)
 valid <- !is.na(probe2gene) & probe2gene != "" & 
          probe2gene != "DarkCorner" & probe2gene != "GE_BrightCorner"
 
 expr_valid <- expr_matrix[valid, ]
 gene_valid <- probe2gene[valid]
 
-# Collapse duplicate probes to gene level (averaging expression)
+# Collapse to Gene Level
 expr_by_gene <- limma::avereps(expr_valid, ID = gene_valid)
 
-# Re-run Limma on the gene-level matrix
+# Re-run Limma on Gene Level
 fit_gene <- lmFit(expr_by_gene, design)
 fit_gene <- eBayes(fit_gene)
-
-# Create ranking metric (t-statistic) for GSEA
 gene_ranking <- fit_gene$t[, "DoseNum"]
 
-# Filter for valid HGNC symbols (optional but recommended for GSEA)
+# Filter for HGNC
 valid_hgnc <- keys(org.Hs.eg.db, keytype = "SYMBOL")
 ranking_valid <- gene_ranking[names(gene_ranking) %in% valid_hgnc]
 ranking_valid <- sort(ranking_valid, decreasing = TRUE)
 
-# 7. PATHWAY ANALYSIS (GSEA via fgsea) -----------------------------------------
+# 7. GLOBAL GSEA (RE-CHECK) ----------------------------------------------------
 
-# Retrieve Gene Sets using msigdbr
 m_df <- msigdbr(species = "Homo sapiens")
+hallmark_list <- split(m_df[m_df$gs_collection == "H", ]$gene_symbol, 
+                       m_df[m_df$gs_collection == "H", ]$gs_name)
 
-# A. Hallmark Pathways
-hallmark_df <- m_df[m_df$gs_collection == "H", c("gs_name", "gene_symbol")]
-hallmark_list <- split(hallmark_df$gene_symbol, hallmark_df$gs_name)
-
-# B. KEGG Pathways (Legacy and Medicus)
-kegg_df <- m_df[m_df$gs_subcollection %in% c("CP:KEGG_LEGACY", "CP:KEGG_MEDICUS"), 
-                c("gs_name", "gene_symbol")]
+kegg_df <- m_df[m_df$gs_subcollection %in% c("CP:KEGG_LEGACY", "CP:KEGG_MEDICUS"), ]
 kegg_list <- split(kegg_df$gene_symbol, kegg_df$gs_name)
 
-# Run GSEA - Hallmark
-message("Running Hallmark GSEA...")
-gsea_hallmark <- fgseaMultilevel(
-  pathways = hallmark_list,
-  stats = ranking_valid,
-  eps = 0
-)
-gsea_hallmark <- as.data.table(gsea_hallmark)[order(padj)]
+message("Running GSEA on Log2 data...")
+gsea_hallmark <- fgseaMultilevel(pathways = hallmark_list, stats = ranking_valid, eps = 0)
+gsea_kegg <- fgseaMultilevel(pathways = kegg_list, stats = ranking_valid, eps = 0)
 
-# Run GSEA - KEGG
-message("Running KEGG GSEA...")
-gsea_kegg <- fgseaMultilevel(
-  pathways = kegg_list,
-  stats = ranking_valid,
-  eps = 0
-)
+# Sort and Save
+gsea_hallmark <- as.data.table(gsea_hallmark)[order(padj)]
 gsea_kegg <- as.data.table(gsea_kegg)[order(padj)]
 
-# 8. EXPORTING RESULTS ---------------------------------------------------------
+fwrite(gsea_hallmark, "results/GSEA_hallmark_log2.tsv", sep = "\t")
+fwrite(gsea_kegg, "results/GSEA_kegg_log2.tsv", sep = "\t")
 
-# Save GSEA tables
-fwrite(gsea_hallmark, "results/GSEA_hallmark_multilevel.tsv", sep = "\t")
-fwrite(gsea_kegg, "results/GSEA_kegg_multilevel.tsv", sep = "\t")
-
-# Check specific Parkinson's Disease result (if interested)
-print(gsea_kegg[gsea_kegg$pathway == "KEGG_PARKINSONS_DISEASE"])
-
-message("Pipeline finished. Results saved in 'results/' folder.")
+# Check Parkinson's result in the corrected data
+head(gsea_hallmark, 10)
+head(gsea_kegg, 10)
+gsea_kegg[gsea_kegg$pathway == "KEGG_PARKINSONS_DISEASE"]
 
 
 # ==============================================================================
