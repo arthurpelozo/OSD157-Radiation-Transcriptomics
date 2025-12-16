@@ -14,23 +14,22 @@ This repository contains the bioinformatics analysis pipeline and results for th
 ## Key Findings
 
 ### 1. Validation
-* Strong activation of DNA damage response (p53) and cell cycle arrest (G2/M) pathways, confirming the biological efficacy of the radiation.
+* Strong activation of DNA damage response (p53) and cell cycle arrest (G2/M) pathways, confirming the biological efficacy of the radiation (**NES = +2.32**, p < 10⁻¹³).
 
 ### 2. Broad PD Hypothesis 
-* No statistically significant enrichment was found for the generic *KEGG Parkinson's Disease* pathway (NES = 0.79, FDR = 0.95), suggesting no broad molecular link to the disease signature in blood.
+* **Zero Enrichment:** No statistically significant enrichment was found for the generic *KEGG Parkinson's Disease* pathway (**NES = 0.64**, p = 0.99), ruling out a broad disease signature (e.g., neurodegeneration) in blood.
 
 ### 3. Targeted Mitophagy Discovery 
 Upon decomposing the pathway into custom functional modules, a specific, dose-dependent **"Push-Pull" Mitophagy Mechanism** was identified:
-* **Activation (+):** Upregulation of autophagic execution markers (*SQSTM1*, *MAP1LC3B*) and core sensors (*PINK1*, *PRKN*).
-* **Disinhibition (-):** Significant downregulation of negative regulators (Deubiquitinases *USP30*, *USP15*).
+* **Activation (+):** Upregulation of autophagic execution markers (*SQSTM1*, *MAP1LC3B*; **logFC +0.064**, p = 0.0001) and core sensors (*PINK1*, *PRKN*).
+* **Disinhibition (-):** Significant downregulation of negative regulators (Deubiquitinases *USP30*, *USP15*; **logFC -0.086**, p = 0.0001).
 
 **Conclusion:** Radiation actively promotes mitochondrial clearance by simultaneously "pressing the gas" (machinery) and "releasing the brakes" (regulators).
 
-### 4. Statistical Proof of Systemic Risk (Mediation Analysis)
-To validate that mitochondrial stress drives broader PD molecular features, a "Clean PD Risk Score" (excluding mitophagy genes to prevent circularity) was modeled:
-* **Systemic Coordination:** Mitophagy core activation significantly predicts the upregulation of independent PD risk genes (e.g., lysosomal/metabolic markers) (**p = 0.0019**).
-* **Mediation:** The effect of radiation on PD molecular risk is **statistically mediated** by the mitophagy response (direct radiation effect drops by 37% and loses significance when controlling for mitophagy).
-
+### 4. Systemic Risk Analysis (The "Dual Signature")
+To validate whether mitochondrial stress drives broader PD molecular features, a "Clean PD Risk Score" (excluding mitophagy genes) was modeled against Radiation Dose and Mitophagy activity:
+* **Parallel Hits:** Modeling confirmed that Radiation **independently** drives both the metabolic cleanup (Mitophagy, p=0.020) and the transcriptomic vulnerability (Risk Genes, p=0.0026).
+* **Dual Signature:** Unlike simple mediation, the radiation effect on risk remained robust (**p = 0.016**) even when controlling for mitophagy. This suggests the cell is under a "Double Attack": a metabolic cost to clean damage AND a direct upregulation of susceptibility genes.
 ## Dataset Structure
 
 * **Source:** [NASA GeneLab (OSD-157)](https://osdr.nasa.gov/bio/repo/data/studies/OSD-157)
@@ -49,36 +48,49 @@ The analysis was performed in R, evolving from standard enrichment to custom mod
 ### 1. Preprocessing
 * Annotation recovery directly from raw data objects.
 * Background correction (`normexp`) + Quantile Normalization.
+* **Log2 Transformation:** Critical step applied to stabilize variance in raw linear data.
 * Probe collapsing via `avereps`.
 
-### 2. Statistical Modeling
-* **Paired Linear Model:** `Y ~ Dose + Donor` using `limma` to account for high inter-individual variability.
-* **Interaction Model:** `Y ~ Dose * Donor` to test donor-specificity.
+### 2. Differential Expression & Enrichment
+* **Paired Linear Model:** `Y ~ Dose + Donor` using `limma` to isolate radiation effects from donor heterogeneity.
+* **GSEA/GSVA:** Multilevel enrichment analysis (`fgsea`) and per-sample pathway scoring (`GSVA`) using Gaussian kernels.
 
-### 3. Functional & Causal Analysis
-* **GSEA:** Multilevel enrichment analysis using Hallmark and KEGG collections (`fgsea`).
-* **Custom Modules:** Manually curated gene sets for specific mitochondrial functions (Fusion/Fission, Core, Regulators).
-* **GSVA:** Gene Set Variation Analysis (Gaussian kernel) to compute per-sample pathway activity scores.
-* **Mediation Analysis:** Testing the causal chain (Radiation -> Mitophagy -> PD Risk) using non-overlapping gene sets ("Clean Score") to prevent mathematical circularity.
+### 3. Causal Inference Framework (The "Dual Signature" Test)
+To distinguish between **Mediation** (Radiation → Mitophagy → Risk) and **Parallel Effects** (Radiation → Risk & Radiation → Mitophagy), we employed a three-step regression framework using a non-overlapping "Clean PD Risk Score":
+
+* **Model A (Total Effect):** `Risk_Score ~ Dose + Donor`
+    * *Hypothesis:* Does radiation directly increase the expression of susceptibility genes?
+* **Model B (Mediator Activation):** `Mitophagy_Score ~ Dose + Donor`
+    * *Hypothesis:* Does radiation actively trigger the mitochondrial cleanup machinery?
+* **Model C (Independence Test):** `Risk_Score ~ Dose + Mitophagy_Score + Donor`
+    * *Hypothesis:* Does the radiation effect on risk disappear when controlling for mitophagy? (If yes = Mediation; If no = Dual/Parallel Signature).
 
 ## Repository Contents
 
 This repository is organized into the following core analysis files:
 
-* **`Full_log.md`** (and `Full_log_files/`):
-  Contains the initial comprehensive analysis, including Quality Control, Normalization, PCA, and standard GSEA (Hallmark/KEGG) validation.
+* **`Clean_Full_Code.R`**: 
+  The complete, reproducible R script containing the entire pipeline (Data Loading, Log2 Normalization, Limma Modeling, GSEA/GSVA, and Mediation Analysis).
 
-* **`Complemetary_Analysis_PD_Pathways_and_Mitophagy.md`**:
-  Contains the deep-dive analysis focusing on the "Push-Pull" mitophagy mechanism, custom module creation, GSVA scoring, and the final mediation/interaction modeling.
+* **`Full_Research_Log.md`**: 
+  The compiled computational notebook. Click this file to view the full analysis, statistical outputs, and visualizations directly on GitHub.
 
-* **`OSD157_Report.txt`**:
-  A plain text executive summary of the project's objectives, methods, and final scientific conclusions.
+* **`Full_Research_Log_files/`**: 
+  Folder automatically generated containing the high-resolution plots (Heatmaps, Barplots, Regression plots) linked within the `.md` log.
+
+* **`OSD157_Report.txt`**: 
+  A plain text executive summary listing the study's specific objectives, methodology, and the final scientific conclusions regarding the "Dual Signature".
+
+* **`README.md`**: 
+  Project overview and documentation (this file).
 
 ## Abstract
 
-This study evaluated global gene expression changes in human peripheral blood samples exposed *ex vivo* to increasing doses of gamma radiation (0 to 8 Gy) following a 48-hour incubation period. Using the NASA GeneLab OSD-157 dataset, a robust bioinformatics pipeline was applied to perform normalization, linear modeling, and Gene Set Enrichment Analysis (GSEA). The results demonstrate a severe transcriptomic response characterized by the activation of the p53 signaling pathway and cell cycle arrest. Furthermore, the hypothesis that ionizing radiation induces molecular signatures associated with Parkinson’s Disease (PD) in leukocytes was specifically tested. No statistically significant enrichment was observed for the canonical PD pathway (NES = 0.79, FDR = 0.95), suggesting an absence of broad molecular overlap in this acute experimental model.
+Ionizing radiation is a potent environmental stressor, yet its potential to induce molecular signatures associated with neurodegenerative vulnerability, specifically Parkinson’s Disease (PD), remains understudied in non-neuronal tissues. This study investigated the transcriptomic response of human peripheral blood mononuclear cells exposed *ex vivo* to gamma radiation (0–8 Gy) to determine if acute exposure triggers specific PD-related biological mechanisms.
 
-However, a targeted interrogation of custom-curated functional modules revealed a specific engagement of mitochondrial quality control mechanisms. Gene Set Variation Analysis (GSVA) uncovered a coordinated, dose-dependent "push-pull" response characterized by the transcriptional upregulation of autophagic execution machinery (*SQSTM1*, *MAP1LC3B*; **logFC +0.066, adj.p = 0.001**) and core sensors (*PINK1*, *PRKN*; **logFC +0.033, adj.p = 0.024**), concurrent with the significant downregulation of negative regulators (*USP30*, *USP15*; **logFC -0.082, adj.p = 0.002**).
+Using the NASA GeneLab OSD-157 dataset, we applied a rigorous bioinformatics pipeline incorporating background correction, **Log2 transformation**, and quantile normalization. Data were analyzed using paired linear modeling (`limma`), Gene Set Enrichment Analysis (GSEA), and Gene Set Variation Analysis (GSVA). A "Clean PD Risk Score" (comprising 15 non-mitophagy susceptibility genes) was constructed to test the causal relationship between mitochondrial stress and systemic molecular vulnerability.
 
-Crucially, statistical modeling using a non-overlapping "clean" risk score confirmed that this mitophagy activation acts as a significant mediator of the broader radiation-induced PD molecular burden (**p = 0.0019**). Mediation analysis demonstrated that controlling for mitophagy activity reduced the direct effect of radiation on PD risk by **37%** (coefficient drop from 32.4 to 20.2), rendering the direct radiation effect statistically non-significant (**p = 0.06**). This suggests that the mitochondrial stress response is not an isolated event but a central driver coordinating a systemic transcriptional state resembling molecular features of Parkinsonian vulnerability.
+The efficacy of the radiation exposure was validated by robust activation of the p53 signaling pathway (**NES = +2.42**, *p* < 10⁻¹²) and a massive induction of lysosomal machinery (**NES = +2.82**, *p* < 10⁻¹⁷). While broad PD modules associated with bioenergetic collapse (Complex I) and synaptic degeneration showed no significant enrichment, a targeted analysis revealed the specific activation of the mitochondrial quality control system (**NES = +1.72**, *p* = 0.019). This response followed a coordinated **"Push-Pull" mechanism**: the transcriptional upregulation of autophagic execution markers (*SQSTM1*, *MAP1LC3B*; **logFC +0.064**, *p* = 0.0001) occurred concurrently with the significant repression of negative regulators (*USP30*, *USP15*; **logFC -0.086**, *p* = 0.0001), effectively lowering the threshold for mitophagy.
+
+Statistical modeling revealed a **"Dual Vulnerability Signature."** Radiation dose linearly drives the expression of independent PD risk genes (**Coefficient = +0.012**, *p* = 0.0026), establishing a "transcriptomic scar." Multivariate analysis demonstrated that this risk accumulation occurs in parallel to, and independent of, the mitophagic response (*p* = 0.016 in the combined model). We conclude that ionizing radiation acts as a systemic stressor that simultaneously imposes a metabolic cleanup cost while independently upregulating a latent transcriptomic profile of genetic vulnerability with a baseline increase in genetic vulnerability of ~0.85% per Gray.
 
