@@ -120,30 +120,3 @@ These findings support a reproducible molecular vulnerability framework for peri
 
 ## Data and code availability statement
 All analyses in this article were derived from evidence available in the current workspace, including processed tables, reports, and scripts. Core evidence includes PD-focused summary tables, global module-scan outputs, and validated reproducibility tables. Analysis scripts implementing preprocessing, donor-aware modeling, pathway triangulation, global scanning, and reproducibility checks are available in the same project repository. External clinical outcome data were not available in current workspace evidence.
-
-## Suggested figure legends
-1. Study design and analytic framework. Overview of cohort structure (5 donors, 5 doses, 25 samples), preprocessing workflow, donor-aware modeling, and pathway triangulation (GSVA, FGSEA, CAMERA), followed by reproducibility checks.
-2. Global pathway effect landscape. Volcano-style display of GSVA dose slopes versus statistical significance across 236 tested modules, highlighting enriched, impoverished, and low-effect classes.
-3. Category-level systems remodeling. Mean pathway effect by biological category, illustrating coordinated upregulation of stress/inflammatory domains and downregulation of maintenance/proteostasis domains.
-4. Top neurodegeneration-relevant pathway effects with uncertainty. Forest plot of GSVA dose effects with 95% confidence intervals for top neurodegeneration-relevant modules; pathways not crossing zero indicate stronger directional evidence.
-5. Cross-method concordance of pathway direction. Scatter of GSVA slopes versus FGSEA NES across modules, with reported Spearman correlation for all modules and neurodegeneration-relevant subset.
-6. Donor-level robustness by leave-one-donor-out. Heatmap/scatter showing pathway slope stability after iteratively excluding one donor, with sign-consistency metrics and slope dispersion summaries.
-
-## Suggested supplementary materials list
-1. Full table of module-level statistics for all tested pathways (GSVA, FGSEA, CAMERA, donor summaries).
-2. Operational definitions and thresholds for enriched, impoverished, and low-effect/non-informative classes.
-3. PD-focused pathway evidence table with module-level donor consistency.
-4. Clean PD risk-score model output with full coefficients and standard errors.
-5. Neurodegeneration subgroup table (ALS, AD, HD, PD-all, prion terms) with multi-method support columns.
-6. LODO full slope matrix and stability summary per pathway.
-7. Sensitivity notes for pathway naming/grouping and category assignment.
-8. Script manifest with execution order and expected outputs.
-9. Additional diagnostic plots for p-value distributions and effect-size distributions.
-10. Reproducibility metadata (software versions, seeds, environment notes where available in workspace evidence).
-
-## Quality-control checklist
-1. Internal consistency: Yes. Numeric claims are aligned with workspace-derived evidence.
-2. Statistics correctly interpreted: Yes. Effect size, uncertainty, FDR, and trend interpretations are separated and conservatively phrased.
-3. No clinical overclaims: Yes. No diagnostic or individual risk claims were made from PBMC evidence.
-4. Reproducibility statements included: Yes. Cross-method concordance and LODO stability were explicitly reported.
-5. Missing information explicitly flagged: Yes. Clinical endpoints and certain external mapping details were marked as not available in current workspace evidence.
