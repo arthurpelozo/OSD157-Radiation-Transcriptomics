@@ -1,4 +1,4 @@
-# OSD-157 / GLDS-157: Transcriptomica de Resposta a Radiacao e Assinaturas Neurodegenerativas em PBMC
+# OSD-157 / GLDS-157: Exploracao Sistematica da Resposta Transcriptomica a Radiacao com Foco Neurodegenerativo
 
 Autor: Arthur Pelozo  
 Data: Abril 2026  
@@ -6,50 +6,71 @@ Plataforma: Agilent Whole Human Genome Microarray (Single-Channel)
 
 ## Visao geral do projeto
 
-Este repositorio contem o pipeline bioinformatico e os resultados da analise do dataset OSD-157 (GeneLab/GLDS-157), avaliando o efeito de dose de radiacao ionizante (0 a 8 Gy, 48h) em PBMC humanas.
+Este repositorio documenta uma analise exploratoria e explicativa do efeito da radiacao ionizante (0 a 8 Gy, 48h) sobre PBMC humanas. O foco principal nao e responder se radiacao "gera Parkinson", mas mapear, com rigor, como a biologia celular e remodelada e em que pontos esse remodelamento se conecta a eixos relevantes para neurodegeneracao.
 
 Objetivos centrais:
-1. Validar o efeito biologico de dose-resposta em transcriptomica sanguinea.
-2. Testar se existe assinatura Parkinson-like ampla ou apenas modulos seletivos.
-3. Integrar evidencias de enriquecimento, correlacao entre metodos e robustez entre doadores.
+1. Caracterizar o efeito dose-resposta global em genes e vias.
+2. Identificar assinaturas neurodegenerativas relevantes (sem inferencia diagnostica).
+3. Diferenciar vias enriquecidas, empobrecidas e irrelevantes no desenho atual.
+4. Fortalecer interpretacao com convergencia entre metodos e robustez entre doadores.
 
 ---
 
-## Achados principais
+## O que este estudo responde (e o que nao responde)
 
-### 1) Resposta transcriptomica global a radiacao foi robusta
-O conjunto de genes respondeu de forma dose-dependente, com modulos relevantes ativados e outros suprimidos, indicando remodelamento sistemico e nao ruido tecnico.
+Este estudo responde:
+1. Quais sistemas biologicos sobem ou descem com dose de radiacao.
+2. Quais achados sao consistentes entre GSVA, FGSEA e CAMERA.
+3. Quais sinais se mantem estaveis em analise leave-one-donor-out.
+4. Quais padroes sao compatveis com cenario de vulnerabilidade neurodegenerativa.
 
-### 2) Hipotese PD ampla nao foi suportada
-O eixo PD global nao apresentou enriquecimento robusto. O sinal PD foi seletivo, concentrado em submodulos especificos.
+Este estudo nao responde:
+1. Diagnostico de doenca neurodegenerativa.
+2. Causalidade clinica individual de Parkinson em humanos.
+3. Equivalencia entre assinatura em PBMC e patologia neuronal direta.
 
-Evidencia focal:
+---
+
+## Achados principais (mensagem cientifica)
+
+### 1) Radiacao remodela a maquinaria celular de forma ampla e dose-dependente
+O efeito nao e localizado em poucos genes isolados. Existe reorganizacao sistemica com ativacao de eixos de dano/inflamacao e queda de eixos de manutencao celular.
+
+### 2) O ponto principal nao e "PD sim ou nao", e sim o padrao de vulnerabilidade biologica
+No recorte PD, o sinal e seletivo e nao amplo:
 1. Familial PD genes: GSVA logFC por Gy = 0.04548, FDR = 0.01056.
-2. PD all: efeito pequeno e nao significativo (GSVA FDR alto).
-
-### 3) Descoberta central: assinatura seletiva dentro de uma resposta sistemica maior
-Ao expandir para toda a biblioteca de modulos:
-1. 236 modulos testados.
-2. 75 significativos por GSVA (FDR abaixo de 0.05).
-3. 63 significativos por FGSEA.
-4. 32 significativos por CAMERA.
-5. 28 modulos significativos simultaneamente nos 3 metodos.
+2. PD all: efeito pequeno e nao significativo.
 
 Interpretacao:
-1. A radiacao induz uma arquitetura biologica mista: eixos de dano/inflamacao sobem, eixos de manutencao/proteostase caem.
-2. A assinatura PD-like existe, mas e parcial e contextual.
+1. O dado sugere conexoes neurodegenerativas especificas.
+2. O dado nao sustenta assinatura global de doença Parkinson-like em sangue.
 
-### 4) Assinatura de risco sistemico (nao clinica)
-O score PD-clean mostrou tendencia positiva com dose, mas sem significancia convencional:
+### 3) A descoberta mais importante esta no scan global de modulos
+Em toda a biblioteca:
+1. 236 modulos testados.
+2. 75 significativos por GSVA (FDR < 0.05).
+3. 63 significativos por FGSEA.
+4. 32 significativos por CAMERA.
+5. 28 significativos nos tres metodos simultaneamente.
+
+Leitura biologica integrada:
+1. Enriquecimento de eixos de estresse, dano e inflamacao.
+2. Empobrecimento de eixos de proteostase, ribossomo e manutencao mitocondrial.
+3. Perfil altamente compativel com cenario de vulnerabilidade molecular sistemica.
+
+### 4) Escore de risco molecular: tendencia, sem extrapolacao clinica
+Score PD-clean:
 1. slope = 0.04095 por Gy.
 2. p = 0.0743.
 
-Conclusao: ha tendencia de vulnerabilidade molecular, sem base para inferencia de risco clinico individual.
+Interpretacao:
+1. Existe tendencia biologica de risco molecular.
+2. Nao ha base para inferencia clinica individual.
 
-### 5) Reprodutibilidade interna e coerencia entre metodos fortaleceram o argumento
-1. Concordancia GSVA vs FGSEA (Spearman): rho global = 0.908 (n = 236).
+### 5) Robustez estatistica e de reproducibilidade sustentam os principais argumentos
+1. Concordancia GSVA vs FGSEA: Spearman rho global = 0.908 (n = 236).
 2. Concordancia no subconjunto neurodeg-relacionado: rho = 0.904 (n = 134).
-3. Modulos com estabilidade LODO alta (consistencia de sinal = 1.0) incluiriam eixos de ribossomo/proteostase, mtDNA replication e ISR death factors.
+3. Modulos com estabilidade LODO alta (consistencia de sinal = 1.0) incluem eixos de ribossomo/proteostase, mtDNA replication e ISR death factors.
 
 ---
 
@@ -95,7 +116,7 @@ Componentes:
 2. FGSEA (enriquecimento pre-ranqueado).
 3. CAMERA (teste competitivo ortogonal).
 
-### Fase D: Score e analise PD-focada
+### Fase D: Score e analise neurodeg-focada
 1. Score robusto de risco PD-like sem sobreposicao com nucleo de mitofagia.
 2. Teste de tendencia do score com dose.
 
@@ -124,7 +145,7 @@ Exemplos de destaque:
 
 Leitura biologica:
 1. Aumento de sinalizacao de dano e inflamacoes.
-2. Ativacao de eixos de resposta a estresse celular.
+2. Ativacao de resposta adaptativa ao estresse celular.
 
 ### Vias empobrecidas (suprimidas)
 Criterio: GSVA logFC negativo e FDR abaixo de 0.05.
@@ -135,8 +156,8 @@ Exemplos de destaque:
 3. NHEJ (reparo de DNA) em subgrupos.
 
 Leitura biologica:
-1. Reducao de programas de manutencao e sintese proteica.
-2. Possivel custo bioenergetico de adaptação ao dano.
+1. Reducao de manutencao celular e capacidade biossintetica.
+2. Maior fragilidade funcional sob estresse persistente.
 
 ### Vias irrelevantes no desenho atual
 Criterio estrito: efeito muito pequeno + ausencia de suporte convergente entre GSVA/FGSEA/CAMERA.
@@ -149,7 +170,7 @@ Interpretacao:
 
 ## Resultados por fases (estatisticas e pontuacoes)
 
-### Fase PD-focada
+### Fase neurodeg-focada
 1. Familial PD genes significativo por GSVA.
 2. Mito-membrane organization com tendencia positiva, mas sem robustez por multiplicidade.
 3. PD all sem efeito robusto.
@@ -208,7 +229,7 @@ Pastas de resultados:
 Pipeline principal:
 Rscript deep_pd2_analysis_pipeline.R
 
-Figuras PD-focadas:
+Figuras neurodeg-focadas:
 Rscript deep_pd2_visual_report.R
 
 Sensibilidade ortologa:
@@ -234,6 +255,6 @@ Rscript deep_pd2_validated_reproducibility_plots.R
 
 ## Conclusao final
 
-Este projeto demonstra que a radiacao induz remodelamento transcriptomico sistemico robusto em PBMC humanas. A evidência nao sustenta uma assinatura ampla de Parkinson, mas sustenta uma assinatura PD-like seletiva, inserida em uma resposta maior de estresse/inflamacao, com supressao paralela de eixos de manutencao celular.
+A principal contribuicao deste projeto e o mapa sistemico de como a radiacao reorganiza a biologia celular em sangue, com foco em conexoes neurodegenerativas relevantes. O valor cientifico central esta na descricao robusta de vulnerabilidade molecular (eixos de dano/inflamacao versus perda de manutencao celular), e nao em afirmar cenario patologico clinico.
 
-A interpretacao correta e de vulnerabilidade molecular sistemica dose-dependente, e nao de risco clinico diagnostico.
+Assim, os dados sustentam um modelo de risco biologico/transcriptomico contextual e reproduzivel, com utilidade para priorizacao mecanistica e estudos de validacao futuros.
