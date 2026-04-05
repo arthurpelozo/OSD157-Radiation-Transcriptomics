@@ -6,7 +6,7 @@ Plataforma: Agilent Whole Human Genome Microarray (Single-Channel)
 
 ## Visao geral do projeto
 
-Este repositorio documenta uma analise exploratoria e explicativa do efeito da radiacao ionizante (0 a 8 Gy, 48h) sobre PBMC humanas. O foco principal nao e responder se radiacao "gera Parkinson", mas mapear, com rigor, como a biologia celular e remodelada e em que pontos esse remodelamento se conecta a eixos relevantes para neurodegeneracao.
+Este repositorio documenta uma analise exploratoria e explicativa do efeito da radiacao ionizante (0 a 8 Gy, 48h) sobre PBMC humanas. O foco principl é mapear, com rigor, como a biologia celular e remodelada e em que pontos esse remodelamento se conecta a eixos relevantes para neurodegeneracao.
 
 Objetivos centrais:
 1. Caracterizar o efeito dose-resposta global em genes e vias.
