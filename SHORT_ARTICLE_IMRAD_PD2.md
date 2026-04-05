@@ -1,16 +1,13 @@
 # Radiation Dose-Responsive Transcriptomic Remodeling in Human PBMC Reveals Reproducible Neurodegeneration-Relevant System Signatures Without Evidence of a Broad Parkinson Program
 
 ## Abstract
-### Background
+
 Ionizing radiation is a strong systems-level stressor, but its peripheral blood transcriptomic consequences are often interpreted through narrow disease-centric hypotheses. Here, we used an exploratory systems-biology framework to determine which molecular systems are dose-responsive in human PBMC, which changes are neurodegeneration-relevant, and how reproducible these signals are across analytic methods and donors.
 
-### Methods
 We analyzed 25 Agilent microarrays (5 donors, 5 radiation doses: 0, 0.5, 2, 5, and 8 Gy; 48 h). Preprocessing included normexp background correction, log2 transformation, quantile normalization, and probe-to-gene collapsing. Dose effects were modeled with donor-aware linear modeling. Pathway-level evidence was triangulated using GSVA (sample-level pathway activity), FGSEA (rank-based enrichment), and CAMERA (competitive enrichment accounting for inter-gene correlation). Multiple testing was controlled with false discovery rate (FDR). Reproducibility was evaluated by cross-method concordance and leave-one-donor-out (LODO) stability analyses.
 
-### Results
 Across the global module scan, 281 modules were parsed, 278 mapped, and 236 tested. Significant modules were identified by GSVA (75), FGSEA (63), and CAMERA (32), with 28 modules significant across all three methods. Using explicit GSVA-based classification, 36 modules were enriched (positive dose slope, FDR < 0.05), 39 were impoverished (negative dose slope, FDR < 0.05), and 57 showed low-effect/non-informative behavior in this dataset. Robust enriched examples included ISR death-factor signaling (GSVA logFC/Gy = 0.0836, FDR = 0.0019) and antigen presentation (0.0641, FDR = 0.0020). Robust impoverished examples included cyto-ribosome assembly (-0.1067, FDR = 0.0013) and mtDNA replication (-0.0906, FDR = 0.0019). PD-focused analysis remained selective: Familial PD genes were significant (0.04548, FDR = 0.01056), while broad PD-all was not. Cross-method concordance was high (Spearman rho = 0.908 globally; rho = 0.904 in neurodegeneration-relevant subset). LODO analyses identified modules with perfect sign consistency across donor removals.
 
-### Conclusions
 Radiation induces reproducible, dose-structured transcriptomic reprogramming in PBMC characterized by concurrent activation of stress/inflammatory pathways and suppression of maintenance/proteostasis pathways. Neurodegeneration-relevant signals are present but selective, supporting a molecular vulnerability interpretation rather than a broad disease-state claim in peripheral blood.
 
 ## Introduction
